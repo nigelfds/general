@@ -60,5 +60,17 @@ function gitrm() {
 }
 
 function gitlog() {
-  git log --oneline --decorate
+  git log --graph --decorate --pretty=oneline --abbrev-commit --all 
 }
+
+#untested -nf
+function gitdata() {
+	git log --date=short --format="format:%h:%aN:%aE:%cd:%ct" --shortstat perl-5.10.0 |
+	          awk 'BEGIN {print "Commit SHA1 Hash:" \
+	                  "Author Name:" "Author e-mail:" "Date:" "Timestamp:" \
+	                  "Files touched:" "Lines added:" "Lines deleted"}
+	                  /^ / {n=0; print ":"$1":"$4":"$6; next}
+	                  /^[^ ]/ {if (n) {print ":0:0:0"}; n=1; printf $0}' >history.csv	
+}
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" 
